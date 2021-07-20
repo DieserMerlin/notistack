@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
-import { withStyles, WithStyles, createStyles, Theme, emphasize } from '@material-ui/core/styles';
+import { createStyles, emphasize, Theme } from '@material-ui/core/styles';
 import Collapse from '@material-ui/core/Collapse';
+import { withStyles, WithStyles } from '@material-ui/styles';
 import SnackbarContent from '../SnackbarContent';
 import { getTransitionDirection } from './SnackbarItem.util';
-import { allClasses, REASONS, objectMerge, DEFAULTS, transformer } from '../utils/constants';
-import { SharedProps, RequiredBy, TransitionHandlerProps, SnackbarProviderProps as ProviderProps } from '../index';
+import { allClasses, DEFAULTS, objectMerge, REASONS, transformer } from '../utils/constants';
+import { RequiredBy, SharedProps, SnackbarProviderProps as ProviderProps, TransitionHandlerProps } from '../index';
 import defaultIconVariants from '../utils/defaultIconVariants';
 import createChainedFunction from '../utils/createChainedFunction';
 import { Snack } from '../SnackbarProvider';
@@ -66,15 +67,13 @@ const styles = (theme: Theme) => {
             left: 0,
         },
     });
-}
-
+};
 
 type RemovedProps =
-    | 'variant' // the one received from Provider is processed and passed to snack prop 
+    | 'variant' // the one received from Provider is processed and passed to snack prop
     | 'anchorOrigin' // same as above
     | 'autoHideDuration' // same as above
     | 'preventDuplicate' // the one recevied from enqueueSnackbar is processed in provider, therefore shouldn't be passed to SnackbarItem */
-
 
 export interface SnackbarItemProps extends WithStyles<typeof styles>, RequiredBy<Omit<SharedProps, RemovedProps>, 'onEntered' | 'onExited' | 'onClose'> {
     snack: Snack;
@@ -181,12 +180,11 @@ const SnackbarItem: React.FC<SnackbarItemProps> = ({ classes, ...props }) => {
         content = content(key, snack.message);
     }
 
-    const callbacks: { [key in keyof TransitionHandlerProps]?: any } =
-        ['onEnter', 'onEntering', 'onEntered', 'onExit', 'onExiting', 'onExited'].reduce((acc, cbName) => ({
-            ...acc,
-            // @ts-ignore
-            [cbName]: createChainedFunction([props.snack[cbName], props[cbName]], props.snack.key),
-        }), {});
+    const callbacks: { [key in keyof TransitionHandlerProps]?: any } = ['onEnter', 'onEntering', 'onEntered', 'onExit', 'onExiting', 'onExited'].reduce((acc, cbName) => ({
+        ...acc,
+        // @ts-ignore
+        [cbName]: createChainedFunction([props.snack[cbName], props[cbName]], props.snack.key),
+    }), {});
 
     return (
         <Collapse
@@ -233,7 +231,7 @@ const SnackbarItem: React.FC<SnackbarItemProps> = ({ classes, ...props }) => {
                                 { [classes.lessPadding]: !hideIconVariant && icon },
                                 classes[transformer.toVariant(variant)],
                                 otherClassName,
-                                singleClassName
+                                singleClassName,
                             )}
                         >
                             <div id={ariaAttributes['aria-describedby']} className={classes.message}>
